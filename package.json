@@ -64,5 +64,11 @@
       "^.+\\.jsx$": "babel-jest",
       "^.+\\.js$": "babel-jest"
     }
+  },
+  "dependencies": {
+    "lodash": "^4.17.10"
+  },
+  "peerDependencies": {
+    "lodash": "4.x"
   }
 }
