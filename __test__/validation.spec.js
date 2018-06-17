@@ -1,7 +1,8 @@
 import {
   getVariablesArray,
   isValidParanthesesPairs,
-  getTagsTree
+  getTagsTree,
+  isSameStructureTagTrees
 } from '../src/';
 
 describe('getVariablesArray', () => {
@@ -18,6 +19,9 @@ describe('getVariablesArray', () => {
 
 describe('isValidParanthesesPairs', () => {
   it('test parantheses pairs with different cases', () => {
+    // non-string
+    expect(isValidParanthesesPairs(null)).toBe(false);
+
     // string
     expect(
       isValidParanthesesPairs(
@@ -87,5 +91,274 @@ describe('getTagsTree', () => {
         ]
       }
     ]);
+  });
+
+  it('should get an empty array', () => {
+    expect(getTagsTree('some text and {variables} without tags')).toEqual([]);
+  });
+});
+
+describe('isSameStructureTagTrees', () => {
+  it('should return false with different length of arrays', () => {
+    const origin = [
+      { tag: '0', children: [] },
+      { tag: '1', children: [] },
+      { tag: '2', children: [] }
+    ];
+    const other = [{ tag: '0', children: [] }, { tag: '1', children: [] }];
+    expect(isSameStructureTagTrees(origin, other)).toBe(false);
+  });
+
+  it('should return true with same trees', () => {
+    const tree = [
+      {
+        tag: '0',
+        children: [
+          {
+            tag: '2',
+            children: []
+          }
+        ]
+      },
+      {
+        tag: '1',
+        children: [
+          {
+            tag: '5',
+            children: []
+          },
+          {
+            tag: '3',
+            children: [
+              {
+                tag: '4',
+                children: []
+              },
+              {
+                tag: '6',
+                children: []
+              }
+            ]
+          }
+        ]
+      }
+    ];
+    expect(isSameStructureTagTrees(tree, tree)).toBe(true);
+  });
+
+  it('should return true with different children order trees', () => {
+    const origin = [
+      {
+        tag: '0',
+        children: [
+          {
+            tag: '2',
+            children: []
+          }
+        ]
+      },
+      {
+        tag: '1',
+        children: [
+          {
+            tag: '5',
+            children: []
+          },
+          {
+            tag: '3',
+            children: [
+              {
+                tag: '4',
+                children: []
+              },
+              {
+                tag: '6',
+                children: []
+              }
+            ]
+          }
+        ]
+      }
+    ];
+
+    const other = [
+      {
+        tag: '1',
+        children: [
+          {
+            tag: '3',
+            children: [
+              {
+                tag: '6',
+                children: []
+              },
+              {
+                tag: '4',
+                children: []
+              }
+            ]
+          },
+          {
+            tag: '5',
+            children: []
+          }
+        ]
+      },
+      {
+        tag: '0',
+        children: [
+          {
+            tag: '2',
+            children: []
+          }
+        ]
+      }
+    ];
+
+    expect(isSameStructureTagTrees(origin, other)).toBe(true);
+  });
+
+  it('should return false with different children', () => {
+    const origin = [
+      {
+        tag: '0',
+        children: [
+          {
+            tag: '2',
+            children: []
+          }
+        ]
+      },
+      {
+        tag: '1',
+        children: [
+          {
+            tag: '5',
+            children: []
+          },
+          {
+            tag: '3',
+            children: [
+              {
+                tag: '4',
+                children: []
+              },
+              {
+                tag: '6',
+                children: []
+              }
+            ]
+          }
+        ]
+      }
+    ];
+
+    const other = [
+      {
+        tag: '1',
+        children: [
+          {
+            tag: '3',
+            children: [
+              {
+                tag: '6',
+                children: []
+              },
+              {
+                tag: 'differentTag',
+                children: []
+              }
+            ]
+          },
+          {
+            tag: '5',
+            children: []
+          }
+        ]
+      },
+      {
+        tag: '0',
+        children: [
+          {
+            tag: '2',
+            children: []
+          }
+        ]
+      }
+    ];
+
+    expect(isSameStructureTagTrees(origin, other)).toBe(false);
+  });
+
+  it('should return false with wrong children strsucture', () => {
+    const origin = [
+      {
+        tag: '0',
+        children: [
+          {
+            tag: '2',
+            children: []
+          }
+        ]
+      },
+      {
+        tag: '1',
+        children: [
+          {
+            tag: '5',
+            children: []
+          },
+          {
+            tag: '3',
+            children: [
+              {
+                tag: '4',
+                children: []
+              },
+              {
+                tag: '6',
+                children: []
+              }
+            ]
+          }
+        ]
+      }
+    ];
+
+    const other = [
+      {
+        tag: '1',
+        children: [
+          {
+            tag: '3',
+            children: [
+              {
+                tag: '6',
+                children: []
+              },
+              {
+                tag: 'differentTag',
+                children: []
+              }
+            ]
+          },
+          {
+            tag: '2',
+            children: []
+          }
+        ]
+      },
+      {
+        tag: '0',
+        children: [
+          {
+            tag: '5',
+            children: []
+          }
+        ]
+      }
+    ];
+
+    expect(isSameStructureTagTrees(origin, other)).toBe(false);
   });
 });

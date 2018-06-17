@@ -1,4 +1,4 @@
-import { isString } from 'lodash';
+import { isString, isArray } from 'lodash';
 
 export function getVariablesArray(str) {
   if (!isString(str)) return false;
@@ -37,8 +37,6 @@ export function isValidParanthesesPairs(str) {
   return result.result;
 }
 
-// /<(\s*(\d+)[^>]*)>(.*?)<\s*\/\s*\1>/g
-// /<(\s*(\d+)[^>]*)>(.*?)<\s*\/\s*\1>/g
 export function getTagsTree(str) {
   if (!isString(str)) return [];
   const tree = [];
@@ -52,4 +50,25 @@ export function getTagsTree(str) {
     tree.push(tag);
   }
   return tree;
+}
+
+export function isSameStructureTagTrees(origin, other) {
+  if (!isArray(origin) || !isArray(other)) return false;
+  if (origin.length !== other.length) return false;
+  // if(!result) return result
+
+  // TODO: tree structure check
+
+  return other.reduce((otherAcc, otherTag) => {
+    return !!(
+      otherAcc &
+      origin.reduce((originAcc, originTag) => {
+        if (originTag.tag !== otherTag.tag) return !!(originAcc | false);
+        return !!(
+          originAcc |
+          isSameStructureTagTrees(originTag.children, otherTag.children)
+        );
+      }, false)
+    );
+  }, true);
 }
