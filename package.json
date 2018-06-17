@@ -9,7 +9,8 @@
     "test": "BABEL_ENV=test jest",
     "test:watch": "BABLE_ENV=test jest --watch",
     "test:cov": "BABEL_ENV=test jest --coverage",
-    "coverage": "BABEL_ENV=test jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+    "coverage": "BABEL_ENV=test jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "prepublish": "npm run test && npm run build"
   },
   "main": "dist/main.cjs.js",
   "module": "dist/main.esm.js",
