@@ -2,7 +2,7 @@ import { isString, isArray, isEqual } from 'lodash';
 
 export function getVariablesArray(str) {
   if (!isString(str)) return false;
-  return str.match(/\{[A-Za-z_][A-Za-z0-9_]*\}/g) || [];
+  return str.match(/(\{[A-Za-z_][A-Za-z0-9_]*\})|(\{[0-9]+\})/g) || [];
 }
 
 export function getAllParantthesesPairs(str) {

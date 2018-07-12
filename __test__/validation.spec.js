@@ -12,9 +12,9 @@ describe('getVariablesArray', () => {
   it('should only parse parantheses with a variable name', () => {
     expect(
       getVariablesArray(
-        '{<0>}Some {} text {{{{ with some {var1} and {var2}</0>'
+        '{<0>}Some {} text {{{{ with some {var1} and {var2}</0> {0}, {123}, {10}'
       )
-    ).toEqual(['{var1}', '{var2}']);
+    ).toEqual(['{var1}', '{var2}', '{0}', '{123}', '{10}']);
     expect(getVariablesArray('{not-a-valid-variable-name}')).toEqual([]);
     expect(getVariablesArray(null)).toBe(false);
   });
@@ -24,7 +24,7 @@ describe('getAllParantthesesPairs', () => {
   it('should parse all parantheses pairs', () => {
     expect(
       getAllParantthesesPairs(
-        'prefix{abc} {_abc} {a_bc} {abc_} center {!@#$%^&*()_+=-0987654321`~|/? "\'} {} { } {  } { a b c } } { {{}} postfix'
+        'prefix{abc} {_abc} {a_bc} {abc_} center {!@#$%^&*()_+=-0987654321`~|/? "\'} {} { } {  } { a b c } } { {{}} {0} {10} {123} postfix'
       )
     ).toEqual([
       '{abc}',
@@ -36,7 +36,10 @@ describe('getAllParantthesesPairs', () => {
       '{ }',
       '{  }',
       '{ a b c }',
-      '{}'
+      '{}',
+      '{0}',
+      '{10}',
+      '{123}'
     ]);
   });
 });
@@ -81,11 +84,10 @@ describe('isValidParanthesesPairs', () => {
 describe('isValidVariablesFormat', () => {
   it('should return true if the results of `getAllParantthesesPairs` and `getVariablesArray` are equal', () => {
     expect(isValidVariablesFormat('normal text with !@#$%^&*()_+=-0987654321`~|/?"\' ')).toBe(true)
-    expect(isValidVariablesFormat('prefix{v1} {v2} center {v3} {v4}postfix')).toBe(true)
+    expect(isValidVariablesFormat('prefix{v1} {v2} center {v3} {v4} {0} {10} {123}postfix')).toBe(true)
     expect(isValidVariablesFormat('prefix{v1} {v2} center {v3} { {v4}postfix')).toBe(false)
     expect(isValidVariablesFormat('prefix{v1} {v2} center {v3} {} {v4}postfix')).toBe(false)
     expect(isValidVariablesFormat('prefix{v1} {v2} center {v3} {-abc} {v4}postfix')).toBe(false)
-    expect(isValidVariablesFormat('prefix{v1} {v2} center {v3} {v4}postfix')).toBe(true)
     expect(isValidVariablesFormat('prefix{v1} {v2} center {v3} {{a}} {v4}postfix')).toBe(false)
     expect(isValidVariablesFormat(null)).toBe(false)
   });
@@ -429,12 +431,12 @@ describe('checkI18nString', () => {
   });
 
   it('should detect bad string (0: bad string, 1: valid string)', () => {
-    const linguiKey = 'prefix<0>{var1} <1>center <2>{var2} {var3}</2><3>{var4}</3></1></0>postfix'
+    const linguiKey = 'prefix<0>{var1} <1>center <2>{var2} {0}</2><3>{10}</3></1></0>postfix'
     expect(checkI18nString(linguiKey, null)).toBe(0);
     expect(checkI18nString(linguiKey, 'bad string {}')).toBe(0);
-    expect(checkI18nString(linguiKey, 'prefix<0>{var1} <1>center <2>{var2} {var3}</2><3>{var4}</3></1></0>postfix')).toBe(1);
-    expect(checkI18nString(linguiKey, '<0>prefix{var1} <1> <3>{var4}</3> center <2>{var2} {var3}</2></1></0>postfix')).toBe(1);
-    expect(checkI18nString(linguiKey, 'prefix<0> {var2}<1>center <2> {var4} {var3}</2><3> {var1}</3></1></0>postfix')).toBe(1);
-    expect(checkI18nString(linguiKey, 'prefix<0>{var1} <2><1>center {var2} {var3}<3>{var4}</3></1></2></0>postfix')).toBe(0);
+    expect(checkI18nString(linguiKey, 'prefix<0>{var1} <1>center <2>{var2} {0}</2><3>{10}</3></1></0>postfix')).toBe(1);
+    expect(checkI18nString(linguiKey, '<0>prefix{var1} <1> <3>{10}</3> center <2>{var2} {0}</2></1></0>postfix')).toBe(1);
+    expect(checkI18nString(linguiKey, 'prefix<0> {var2}<1>center <2> {10} {0}</2><3> {var1}</3></1></0>postfix')).toBe(1);
+    expect(checkI18nString(linguiKey, 'prefix<0>{var1} <2><1>center {var2} {0}<3>{10}</3></1></2></0>postfix')).toBe(0);
   });
 });
