@@ -1,6 +1,6 @@
 {
   "name": "lingui-string-validation",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "test a lingui translated text is valid or not",
   "scripts": {
     "build": "BABEL_ENV=production rollup -c",
