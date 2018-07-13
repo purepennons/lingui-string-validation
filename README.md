@@ -23,9 +23,6 @@
   </a>
 </p>
 
-
-[![Coverage Status](https://coveralls.io/repos/github/purepennons/lingui-string-validation/badge.svg)](https://coveralls.io/github/purepennons/lingui-string-validation)
-
 Check a string is a valid [jsLingui](https://github.com/lingui/js-lingui) string or not (compare with jsLingui [minimal](https://lingui.github.io/js-lingui/ref/lingui-conf.html#minimal) format key).
 
 ## Dependencies
